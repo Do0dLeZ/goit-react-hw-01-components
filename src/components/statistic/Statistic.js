@@ -1,8 +1,8 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import ListItemStatistic from './ListItemStatistic';
 
 import styled from 'styled-components';
-import getColor from '../../js/randomRGBColor.js';
 
 //------------------ Styles ----------------------
 
@@ -25,35 +25,6 @@ const List = styled.ul`
   display: flex;
 `;
 
-const ListItem = styled.li`
-  flex-grow: 1;
-  font-family: 'Noteworthy';
-  padding: 5px;
-  width: 20px;
-  background-color: ${props => props.color};
-
-  &:last-child {
-    border-bottom-right-radius: 10px;
-  }
-
-  &:first-child {
-    border-bottom-left-radius: 10px;
-  }
-`;
-
-const Txt = styled.span`
-  display: block;
-  color: white;
-`;
-
-const LabelTxt = styled(Txt)`
-  margin-bottom: 4px;
-`;
-
-const PercentTxt = styled(Txt)`
-  font-size: 21px;
-`;
-
 //------------------ Component --------------------
 
 const Statistic = ({ title, stats }) => (
@@ -62,10 +33,11 @@ const Statistic = ({ title, stats }) => (
 
     <List>
       {stats.map(stat => (
-        <ListItem key={stat.id} color={getColor()}>
-          <LabelTxt>{stat.label}</LabelTxt>
-          <PercentTxt>{stat.percentage}%</PercentTxt>
-        </ListItem>
+        <ListItemStatistic
+          key={stat.id}
+          label={stat.label}
+          percentage={stat.percentage}
+        />
       ))}
     </List>
   </Section>
@@ -79,7 +51,15 @@ Statistic.defaultProps = {
 
 Statistic.propTypes = {
   title: propTypes.string,
-  stats: propTypes.array,
+  stats: propTypes.objectOf(
+    propTypes.arrayOf(
+      propTypes.exact({
+        id: propTypes.string.isRequired,
+        label: propTypes.string.isRequired,
+        percentage: propTypes.number.isRequired,
+      }),
+    ),
+  ),
 };
 
 export default Statistic;
